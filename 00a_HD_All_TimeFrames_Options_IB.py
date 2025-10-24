@@ -29,6 +29,8 @@ from ibapi.utils import iswrapper
 from ibapi.wrapper import EWrapper
 import yfinance as yf
 
+from indices_sources import get_all_indices
+
 
 # from getFundamentalDetails import getFundamentalDetails
 
@@ -593,29 +595,27 @@ def main():
 
     output = []
 
-    nifty = ['INDUSINDBK.NS','AXISBANK.NS','UPL.NS','SBIN.NS','ICICIBANK.NS','SUNPHARMA.NS','KOTAKBANK.NS','ADANIPORTS.NS','TECHM.NS','BHARTIARTL.NS','GRASIM.NS','ZEEL.NS',
-               'INFRATEL.NS','BAJFINANCE.NS','IOC.NS','HDFC.NS','LT.NS','ITC.NS','BPCL.NS','ULTRACEMCO.NS','HDFCBANK.NS','ONGC.NS','RELIANCE.NS','BAJAJFINSV.NS','MARUTI.NS',
-               'WIPRO.NS','NESTLEIND.NS','GAIL.NS','TITAN.NS','TCS.NS','HINDALCO.NS','BRITANNIA.NS','BAJAJ-AUTO.NS','HCLTECH.NS','TATASTEEL.NS','SHREECEM.NS','NTPC.NS',
-               'CIPLA.NS','EICHERMOT.NS','COALINDIA.NS','M&M.NS','TATAMOTORS.NS','HINDUNILVR.NS','ASIANPAINT.NS','HDFCLIFE.NS','INFY.NS','DRREDDY.NS','POWERGRID.NS',
-               'HEROMOTOCO.NS','JSWSTEEL.NS','PFC.NS','SUNTV.NS']
+    try:
+        index_lists = get_all_indices()
+    except Exception:
+        logging.exception("Failed to download index constituents; continuing with empty lists")
+        index_lists = {"NIFTY50": [], "SP500": [], "FTSE100": []}
 
-    
+    nifty50 = index_lists.get("NIFTY50", [])
+    snp500 = index_lists.get("SP500", [])
+    ftse100 = index_lists.get("FTSE100", [])
 
-    spx = ['DKNG','DIA', 'GLD', 'GDX', 'FXI', 'IWM', 'QQQ', 'DIS', 'SLV', 'SPY', 'LMND', 'SFT','TLT', 'ETSY', 'DAL',
-              'RDFN', 'AMD','NET', 'ATVI', 'PTON', 'AFL','BBY', 'LOW', 'COST', 'CMCSA','MRNA', 'DD', 'XLE',
-              'NIO', 'BYND', 'NVDA', 'SHOP', 'PRPL','ORCL', 'PYPL', 'EXPI', 'UPWK', 'SNAP', 'PINS', 'SQ', 'TGT', 'Z', 'DOCU', 'RKT', 'U','WFC',
-               'XLNX', 'WYNN', 'XPEV', 'W', 'FSLY', 'CAT', 'TWTR', 'ZM','AAPL', 'TSLA', 'FB', 'SPY', 'SPOT', 'GOOG',
-              'GOOGL', 'NTAP', 'QCOM', 'VXX', 'JNJ', 'V', 'AMZN', 'T','DPZ', 'CMG', 'PEP', 'EBAY', 'MSFT', 'KBH', 'PG', 'CCL', 'JPM', 'BRK-B','BRK-A',
-              'UNH','HD', 'HD', 'PFE','KO', 'NFLX', 'C', 'DELL', 'CSCO','SBUX','WDC','DBX','ENPH','ETSY','SNOW','TTCF','UI','W']
+    # Retain legacy variable names used throughout the script
+    nifty = nifty50
+    spx = snp500
+    ftse = ftse100
 
-    
-     
-
-    ftse  = ['STAN.L','NXT.L','ULVR.L','WPP.L','AZN.L','NG.L','GSK.L','AV.L','PRU.L','LLOY.L','BARC.L','HSBA.L','AV.L','AAL.L','RIO.L','DGE.L','IAG.L','GLEN.L','RR.L','MRW.L','BT-A.L','NWG.L','KGF.L']
-
- 
-
-  
+    logging.info(
+        "Loaded constituents: NIFTY50=%d, SP500=%d, FTSE100=%d",
+        len(nifty50),
+        len(snp500),
+        len(ftse100),
+    )
 
     finalList = nifty50 + dow30 + nasdaq30 + snp500 + indices + ftse30 + ftse100 #+ dax30 + forex
 
